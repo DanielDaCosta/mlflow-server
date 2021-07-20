@@ -1,39 +1,40 @@
 variables:
   AWS_DEFAULT_REGION: us-east-1
   APP_NAME: mlflow
-
-.dynamicVariables: &dynamicVariables
-  before_script:
-    - |
-      if [ "$CI_COMMIT_REF_NAME" == "master" ]; then
-        echo "Production Environment" &&
-        aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID_PRD &&
-        aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY_PRD;
-      else
-        echo "No Environment";
-      fi
-    - ACCOUNT_ID=`aws sts get-caller-identity --output text --query 'Account'
-    - DOCKER_REGISTRY=$ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+  DOCKER_HOST: tcp://docker:2375
 
 image: 
   name: amazon/aws-cli
   entrypoint: [""]
 
+stages:
+  - deploy
+
 publish:
   stage: deploy
-  <<: *dynamicVariables
   services:
     - docker:dind
   before_script:
+    - |
+      if [ "$CI_COMMIT_REF_NAME" == "main" ]; then
+        echo "Production Environment" &&
+        aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID &&
+        aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY;
+      else
+        echo "No Environment";
+      fi
+    - ACCOUNT_ID=`aws sts get-caller-identity --output text --query 'Account'`
+    - DOCKER_REGISTRY=$ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
     - amazon-linux-extras install docker
     - docker --version
   script:
-    - docker build -t $DOCKER_REGISTRY/$APP_NAME:latest container/.
+    - echo $DOCKER_REGISTRY/$APP_NAME:cicd_latest
+    - docker build -t $DOCKER_REGISTRY/$APP_NAME:latest container/
     - aws ecr describe-repositories --repository-names $APP_NAME || aws ecr create-repository --repository-name $APP_NAME
     - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $DOCKER_REGISTRY
     - docker push $DOCKER_REGISTRY/$APP_NAME:latest
   only:
     refs:
-      - master
+      - main
     changes:
       - container/Dockerfile
