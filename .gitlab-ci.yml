@@ -1,0 +1,26 @@
+variables:
+  DOCKER_REGISTRY: 852625160832.dkr.ecr.us-east-1.amazonaws.com
+  AWS_DEFAULT_REGION: us-east-1
+  APP_NAME: churn_models
+  DOCKER_HOST: tcp://docker:2375
+
+image: 
+  name: amazon/aws-cli
+  entrypoint: [""]
+
+publish:
+  stage: deploy
+  services:
+    - docker:dind
+  before_script:
+    - amazon-linux-extras install docker
+    - docker --version
+  script:
+    - docker build -t $DOCKER_REGISTRY/$APP_NAME:daily_latest .
+    - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $DOCKER_REGISTRY
+    - docker push $DOCKER_REGISTRY/$APP_NAME:daily_latest
+  only:
+    refs:
+      - master
+    changes:
+      - container/Dockerfile
