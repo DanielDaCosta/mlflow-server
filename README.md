@@ -6,6 +6,40 @@ Mlflow is an open-source platform to manage the ML lifecycle, including experime
 
 ![DatabaseSchema](images/MLFlow_Infra.png)
 
+## IAM Permissions
+The EC2 instance requires the following policies:
+- Read-Write from the s3 bucket.
+- AmazonEC2ContainerRegistryReadOnly
+- Read Parameters from SSM:
+```{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameters",
+                "ssm:GetParameter"
+            ],
+            "Resource": "arn:aws:ssm:us-east-1:{ACCOUNT_ID}:parameter/mlflow/*"
+        }
+    ]
+}
+```
+- KMS decrypt for encrypted SSM parameters
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "kms:Decrypt",
+            "Resource": "arn:aws:kms:us-east-1:{ACCOUNT_ID}:key/{KEY-ID}"
+        }
+    ]
+}```
+
 ## Code Structure
 
 The code was executed on AWS AMI: Amazon Linux 2
