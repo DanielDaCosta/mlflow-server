@@ -2,6 +2,9 @@
 
 Mlflow is an open-source platform to manage the ML lifecycle, including experimentation, reproducibility, deployment, and a central model registry.
 
+## Infrastructure
+
+![DatabaseSchema](images/MLFlow_Infra.png)
 
 ## Code Structure
 
@@ -126,6 +129,8 @@ eval_metric_result = 'logloss'
 for i, metric in enumerate(results['validation_1'][eval_metric_result]):
     mlflow.log_metric('Validation LogLoss', metric, step=i)
 ```
+
+![DatabaseSchema](images/Metric_per_epoch.png)
 
 6. Save Images: You can save, for example, SHAP summary_plot images
 
