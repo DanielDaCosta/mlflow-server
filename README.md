@@ -38,7 +38,8 @@ The EC2 instance requires the following policies:
             "Resource": "arn:aws:kms:us-east-1:{ACCOUNT_ID}:key/{KEY-ID}"
         }
     ]
-}```
+}
+```
 
 ## Code Structure
 
