@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Env Variables
-# Database variables are stored on SSM Parameter Store
+# Database variables are saved on SSM Parameter Store
 ACCOUNT_ID=`aws sts get-caller-identity --output text --query 'Account'`
 DB_PASS=`aws ssm get-parameters --region us-east-1 --names /mlflow/DB_PASS --with-decryption --query "Parameters[0].Value" --output text`
 DB_HOST=`aws ssm get-parameters --region us-east-1 --names /mlflow/DB_HOST --query "Parameters[0].Value" --output text`
