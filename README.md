@@ -74,3 +74,67 @@ docker run --env BUCKET=s3://mlflow-artifacts/ --env USERNAME=$DB_USER --env PAS
 
 ## Usage
 After pushing the image to ECR, run the command `bash run_container.sh`; it will build the docker image for you.
+
+
+## MLFlow - User Guide
+1. Set ML_FLOW_TRACKING_URI:
+```
+ML_FLOW_TRACKING_URI = "http://localhost:5000"
+```
+2. Create a new experiment:
+```
+mlflow.set_experiment("{project-name}-{user}")
+```
+
+3. Run mlflow's APIs for starting and managing MLflow runs:
+
+```mlflow.start_run({name-of-your-runner})
+In the end: mlflow.end_run()
+```
+
+4. Logging model Parameters:
+```# XGBoost Params
+param_dist = {
+    'objective':'binary:logistic',
+    'n_estimators': 1000,
+    'scale_pos_weight' : count_notchurn/count_churn,
+    'max_depth' : 4,
+    'min_child_weight': 6,
+    'learning_rate': 0.005,
+    'subsample': 0.8,
+    'colsample_bytree': 0.7,
+    'gamma': 0,
+    'seed': 42
+}
+
+mlflow.log_params(param_dist)
+```
+
+5. Logging Metrics:
+- Single metrics
+```mlflow.log_metric('Recall', recall)
+mlflow.log_metric('Precision', precision)
+mlflow.log_metric('Balanced Accuracy', balanced_accuracy)
+mlflow.log_metric('F1', f1)
+```
+- Logging metrics per epochs:
+```
+# For XGboost model
+results = model.evals_result() # Get metric lists
+eval_metric_result = 'logloss'
+
+for i, metric in enumerate(results['validation_1'][eval_metric_result]):
+    mlflow.log_metric('Validation LogLoss', metric, step=i)
+```
+
+6. Save Images: You can save, for example, SHAP summary_plot images
+
+```shap.summary_plot(shap_values, X_test, max_display=50, show=False)
+fig_shap = 'SHAP_Xgboost.png'
+pyplot.savefig(fig_shap, bbox_inches='tight')
+
+mlflow.log_artifact(fig_shap)
+```
+
+7. Save Model: You can also store the entire model:
+```mlflow.xgboost.log_model(model, "XGboost")```
