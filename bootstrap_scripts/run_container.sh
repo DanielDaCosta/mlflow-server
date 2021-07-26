@@ -37,6 +37,6 @@ chown -R ec2-user:ec2-user /home/ec2-user/.docker
 sudo -u ec2-user docker pull $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/mlflow:latest
 
 # Run Container (Expose port 5000; Restart -always- after reboot)
-docker run --env BUCKET=s3://solucoes-ct-mlflow-artifacts/ --env USERNAME=$DB_USER --env PASSWORD=$DB_PASS \
+docker run --env BUCKET=s3://mlflow-artifacts/ --env USERNAME=$DB_USER --env PASSWORD=$DB_PASS \
 --env HOST=$DB_HOST --env PORT=5432 --env DATABASE=mlflow \
 -p 5000:5000 -d --restart always --name mlflow-server $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/mlflow:latest
