@@ -175,7 +175,7 @@ for i, metric in enumerate(results['validation_1'][eval_metric_result]):
 
 ![MetricPerEpoch](images/metric_per_epoch.png)
 
-6. Save Images: You can save, for example, SHAP summary_plot images
+6. Save Images: You can save, for example, SHAP summary_plot images:
 
 ```python
 shap.summary_plot(shap_values, X_test, max_display=50, show=False)
