@@ -8,9 +8,9 @@ Mlflow is an open-source platform to manage the ML lifecycle, including experime
 
 ## IAM Permissions
 The EC2 instance requires the following policies:
-- Read-Write from the s3 bucket.
-- AmazonEC2ContainerRegistryReadOnly
-- Read Parameters from SSM:
+- *Read-Write* from the s3 bucket.
+- *AmazonEC2ContainerRegistryReadOnly*
+- *Read Parameters* from SSM:
 ```json 
 {
     "Version": "2012-10-17",
