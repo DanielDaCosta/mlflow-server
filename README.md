@@ -1,4 +1,4 @@
-# MLflow Server on EC2 using RDS and s3 as backend services
+# MLflow Server on EC2 using Postgres-RDS and s3 as backend services
 
 Mlflow is an open-source platform to manage the ML lifecycle, including experimentation, reproducibility, deployment, and a central model registry.
 
